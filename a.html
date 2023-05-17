@@ -1,0 +1,851 @@
+
+<html>
+<head>
+<title>招投标中心</title>
+
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta http-equiv="Cache-Control" content="no-store"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<script src="http://yntsoft.tpddns.cn:8866//xmarket/scripts/prototype/prototype.js" type="text/javascript"></script>
+<script src="http://yntsoft.tpddns.cn:8866//xmarket/scripts/gotopage.js" type="text/javascript"></script>
+<script src="http://yntsoft.tpddns.cn:8866//xmarket/scripts/prototype/scriptaculous.js" type="text/javascript"></script>
+
+<!-- LIBS -->
+<!--
+<script type="text/javascript" src="http://yntsoft.tpddns.cn:8866//xmarket/components/ext/adapter/ext-base.js"></script>
+-->
+<script type="text/javascript" src="http://yntsoft.tpddns.cn:8866//xmarket/components/ext/adapter/yui/yui-utilities.js"></script>
+<script type="text/javascript" src="http://yntsoft.tpddns.cn:8866//xmarket/components/ext/adapter/yui/ext-yui-adapter.js"></script>
+<link rel="stylesheet" type="text/css" href="http://yntsoft.tpddns.cn:8866//xmarket/components/ext/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="http://yntsoft.tpddns.cn:8866//xmarket/components/ext/resources/css/xtheme-gray.css" />
+<script type="text/javascript" src="http://yntsoft.tpddns.cn:8866//xmarket/components/ext/ext-all.js"></script>
+<!-- ENDLIBS -->
+
+
+<link href="http://yntsoft.tpddns.cn:8866//xmarket/styles/stu_admin.css" type="text/css" rel=stylesheet>
+<link href="http://yntsoft.tpddns.cn:8866//xmarket/styles/stu_extremecomponents.css" type="text/css" rel=stylesheet>
+<link href="http://yntsoft.tpddns.cn:8866//xmarket/css/global.css"  rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+	var bookId;
+	function ondo(id){
+		bookId=id;
+		Ext.MessageBox.prompt('投标', '请输入你的投标价格:', showResultText);
+	}
+	
+	function showResultText(btn, text){
+		var price=text.replace(/(^\s*)|(\s*$)/g,"");
+		if(btn=='ok'){
+			if(price==null||price.length==0){
+				Ext.MessageBox.show({
+		           title: '提示',
+		           msg: '投标价格不能为空!',
+		           width:300,
+		           buttons: Ext.MessageBox.OK,
+		           icon: Ext.MessageBox.ERROR
+	       		});
+	       		return;
+			}
+			if(!/^[1-9]\d*$/.test(price)){
+				Ext.MessageBox.show({
+		           title: '提示',
+		           msg: '投标价格只能为正整数!',
+		           width:300,
+		           buttons: Ext.MessageBox.OK,
+		           icon: Ext.MessageBox.ERROR
+	       		});
+	       		return;
+			}
+			if(price.length>7){
+				Ext.MessageBox.show({
+		           title: '提示',
+		           msg: '投标价格不能超过7位数!',
+		           width:300,
+		           buttons: Ext.MessageBox.OK,
+		           icon: Ext.MessageBox.ERROR
+	       		});
+	       		return;
+			}
+			document.getElementById('sub_price').value=price;
+			document.getElementById('sub_bookid').value=bookId;
+			var actionForm=document.getElementById('queryform');
+			//actionForm.method="POST";
+			//actionForm.action='http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=addCompanyList&CSRFToken=';
+			actionForm.action='http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=addCompanyList';
+			actionForm.submit();
+			//window.location='cases.do?method=addCompanyList&price='+price+'&bookid='+bookId;
+		}
+    }
+    
+ function getInfo(url,objId,type){
+ 	var title;
+ 	if(type=='1')
+ 		title='标书详情';
+ 	else
+ 	 	title='配货详情';	
+ 	var	win = new Ext.Window({
+	  title:title,
+      width:600,
+      height:270,
+      layout:'fit',
+      modal:true,
+      plain: true,
+      closeAction:'close',
+      items:new Ext.Panel({
+       			width:580,
+    			height:265,
+       			autoLoad:{url:url,callback: function(){}, scope: this,scripts:false}
+       })
+ 	 });	
+   	win.show(Ext.get(objId));
+  }
+</script>
+</head>
+<body>
+<div class="frametab">
+    <ul>
+        <li><a href="http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do" class="nowftabs">未开标标书</a></li>
+        <li><a href="http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=openbookinfo">已开标标书</a></li>
+        <li><a href="http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=delbookinfo">废标标书</a></li>
+    </ul>
+    <div class="clean"></div>
+</div>
+<div class="framepage">
+    
+
+
+    <span class="message" id="Messages" >
+        
+            投标成功!
+        
+    </span>
+	<span style="clear:both; float:none;"></span>
+
+    <div class="titleDiv">招投标中心</div>
+    <div id="filterDiv" style="text-align: left;">
+        
+          <div class="theSelect">
+            <form id="queryform" action="http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=index" method="post">   
+            	<input type="hidden" id="sub_price" name="price" value="0"/ value="1250">
+            	<input type="hidden" id="sub_bookid" name="bookid" value="0"/ value="14708">					
+                &nbsp;区域：<select name="search_areaId">
+                                     <option value="">--所有区域--</option>
+                                     <option value="1">华北地区</option>
+                                     <option value="2">东北地区</option>
+                                     <option value="3">华东地区</option>
+                                     <option value="4" selected>华南地区</option>
+                                     <option value="5">西北地区</option>
+                                     <option value="6">西南地区</option>
+                                     <option value="7">华中地区</option>	
+                                </select>&nbsp;
+                &nbsp;产品档次：<select name="search_proLevel">
+                                    <option value="" selected>--所有--</option>
+                                    <option value="1">高档</option>
+                                    <option value="2">中档</option>
+                                    <option value="3">低档</option>
+                                </select>&nbsp;				
+                &nbsp;信用等级：<select name="search_credit">
+                                    <option value="" selected>--所有--</option>
+                                    <option value="1">AAA</option>
+                                    <option value="2">AA</option>
+                                    <option value="3">A</option>
+                                    <option value="4">B</option>
+                                    <option value="5">C</option>
+                                </select>&nbsp;				
+                
+                <input type="image" src="http://yntsoft.tpddns.cn:8866//xmarket/images/searchBtn.gif"  class="nullBorder" onClick="document.forms.queryform.submit();">
+                <div style="clear: both; float: none;"></div>
+                <input type="hidden" name="CSRFToken" value="681c2dc8-00db-495a-bbb0-68f5ba88e781" / value="1709fa32-750f-4874-953e-51300cab0672">
+</form>
+          </div>
+        
+    </div>
+    <div id="tableDiv1">
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+            
+                
+                
+                
+                
+                
+                
+                
+                 
+                 
+    
+                
+                 
+                 			
+                 
+                 
+                 
+       
+            
+        
+<form id="ec"  action="http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do"  method="get" >
+<div>
+<input type="hidden"  name="ec_i"  value="ec" />
+<input type="hidden"  name="ec_crd"  value="10" />
+<input type="hidden"  name="ec_p"  value="1" />
+<input type="hidden"  name="ec_s_amount" />
+<input type="hidden"  name="ec_s_bookPrice" />
+<input type="hidden"  name="search_credit"  value="" />
+<input type="hidden"  name="CSRFToken"  value="1709fa32-750f-4874-953e-51300cab0672" />
+<input type="hidden"  name="bookid"  value="14708" />
+<input type="hidden"  name="price"  value="1250" />
+<input type="hidden"  name="search_areaId"  value="4" />
+<input type="hidden"  name="method"  value="addCompanyList" />
+<input type="hidden"  name="search_proLevel"  value="" />
+</div>
+<div class="eXtremeTable" >
+<table id="ec_table"  border="0"  cellspacing="0"  cellpadding="0"  class="tableRegion"  width="100%" >
+	<thead>
+	<tr style="padding: 0px;" >
+		<td colspan="10" >
+		<table border="0"  cellpadding="0"  cellspacing="0"  width="100%" >
+			<tr>
+				<td class="statusBar" >找到9 条记录, 显示 1 到 9 </td>
+				<td class="compactToolbar"  align="right" >
+				<table border="0"  cellpadding="1"  cellspacing="2" >
+					<tr>
+					<td><img src="http://yntsoft.tpddns.cn:8866//xmarket/images/table/firstPageDisabled.gif"  style="border:0"  alt="第一页" /></td>
+					<td><img src="http://yntsoft.tpddns.cn:8866//xmarket/images/table/prevPageDisabled.gif"  style="border:0"  alt="上一页" /></td>
+					<td><img src="http://yntsoft.tpddns.cn:8866//xmarket/images/table/nextPageDisabled.gif"  style="border:0"  alt="下一页" /></td>
+					<td><img src="http://yntsoft.tpddns.cn:8866//xmarket/images/table/lastPageDisabled.gif"  style="border:0"  alt="最后页" /></td>
+					<td><img src="http://yntsoft.tpddns.cn:8866//xmarket/images/table/separator.gif"  style="border:0"  alt="Separator" /></td>
+					<td><select name="ec_rd"  onchange="javascript:document.forms.ec.ec_crd.value=this.options[this.selectedIndex].value;document.forms.ec.ec_p.value='1';document.forms.ec.setAttribute('action','http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do');document.forms.ec.setAttribute('method','get');document.forms.ec.submit()" >
+				<option value="10"  selected="selected">10</option><option value="50" >50</option><option value="100" >100</option>
+				</select></td>
+					</tr>
+				</table></td>
+			</tr>
+		</table>
+		</td>
+	</tr>		
+
+	<tr>
+		<td class="tableHeader" >序号</td>
+		<td class="tableHeader" >标题</td>
+		<td class="tableHeader" >区域</td>
+		<td class="tableHeader" >信用等级</td>
+		<td class="tableHeader"  onmouseover="this.className='tableHeaderSort';this.style.cursor='pointer'"  onmouseout="this.className='tableHeader';this.style.cursor='default'"  onclick="javascript:document.forms.ec.ec_s_amount.value='asc';document.forms.ec.ec_p.value='1';document.forms.ec.setAttribute('action','http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do');document.forms.ec.setAttribute('method','get');document.forms.ec.submit()"  title="排序 欲采购数量" >欲采购数量</td>
+		<td class="tableHeader" >投标截止日期</td>
+		<td class="tableHeader"  onmouseover="this.className='tableHeaderSort';this.style.cursor='pointer'"  onmouseout="this.className='tableHeader';this.style.cursor='default'"  onclick="javascript:document.forms.ec.ec_s_bookPrice.value='asc';document.forms.ec.ec_p.value='1';document.forms.ec.setAttribute('action','http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do');document.forms.ec.setAttribute('method','get');document.forms.ec.submit()"  title="排序 标书价格" >标书价格</td>
+		<td class="tableHeader" >标书详情</td>
+		<td class="tableHeader" >配货详情</td>
+		<td class="tableHeader" >操作</td>
+	</tr>
+	</thead>
+	<tbody class="tableBody" >
+	<tr class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>1</td>
+		<td>
+                    14713号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        AAA
+                        
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    10000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    200.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14713" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14713','bookinfo14713','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14713" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14713','loginfo14713','2');">
+                 </td>
+		<td>
+                    
+                        <input type="button" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="标价并投标" onClick="ondo('14713');">
+                        
+                    
+                 </td>
+	</tr>
+	<tr class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>2</td>
+		<td>
+                    14712号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        AAA
+                        
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    15000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    500.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14712" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14712','bookinfo14712','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14712" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14712','loginfo14712','2');">
+                 </td>
+		<td>
+                    
+                        <input type="button" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="标价并投标" onClick="ondo('14712');">
+                        
+                    
+                 </td>
+	</tr>
+	<tr class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>3</td>
+		<td>
+                    14711号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        AAA
+                        
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    5000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    200.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14711" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14711','bookinfo14711','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14711" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14711','loginfo14711','2');">
+                 </td>
+		<td>
+                    
+                        <input type="button" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="标价并投标" onClick="ondo('14711');">
+                        
+                    
+                 </td>
+	</tr>
+	<tr class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>4</td>
+		<td>
+                    14710号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        
+                        AA
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    5000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    200.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14710" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14710','bookinfo14710','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14710" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14710','loginfo14710','2');">
+                 </td>
+		<td>
+                    
+                        
+                        已投标
+                    
+                 </td>
+	</tr>
+	<tr class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>5</td>
+		<td>
+                    14709号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        
+                        
+                        A
+                        
+                        
+                    
+                </td>
+		<td>
+                    5000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    200.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14709" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14709','bookinfo14709','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14709" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14709','loginfo14709','2');">
+                 </td>
+		<td>
+                    
+                        
+                        已投标
+                    
+                 </td>
+	</tr>
+	<tr class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>6</td>
+		<td>
+                    14708号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        
+                        
+                        A
+                        
+                        
+                    
+                </td>
+		<td>
+                    15000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    200.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14708" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14708','bookinfo14708','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14708" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14708','loginfo14708','2');">
+                 </td>
+		<td>
+                    
+                        
+                        已投标
+                    
+                 </td>
+	</tr>
+	<tr class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>7</td>
+		<td>
+                    14707号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        AAA
+                        
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    15000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    500.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14707" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14707','bookinfo14707','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14707" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14707','loginfo14707','2');">
+                 </td>
+		<td>
+                    
+                        <input type="button" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="标价并投标" onClick="ondo('14707');">
+                        
+                    
+                 </td>
+	</tr>
+	<tr class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>8</td>
+		<td>
+                    14706号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        
+                        AA
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    15000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    200.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14706" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14706','bookinfo14706','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14706" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14706','loginfo14706','2');">
+                 </td>
+		<td>
+                    
+                        <input type="button" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="标价并投标" onClick="ondo('14706');">
+                        
+                    
+                 </td>
+	</tr>
+	<tr class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>9</td>
+		<td>
+                    14705号标的
+                </td>
+		<td>
+                    
+                        
+                        
+                        
+                        华南地区
+                        
+                        
+                        
+                    
+                </td>
+		<td>
+                    
+                        
+                        
+                        A
+                        
+                        
+                    
+                </td>
+		<td>
+                    15000
+                 </td>
+		<td>
+                    1年
+                 </td>
+		<td>
+                    500.00
+                 </td>
+		<td>
+                    <input type="button" id="bookinfo14705" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=bookinfo&bookid=14705','bookinfo14705','1');">
+                </td>
+		<td>
+                    <input type="button" id="loginfo14705" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="查看" onClick="getInfo('http://yntsoft.tpddns.cn:8866//xmarket/student/cases.do?method=lookCaseMate&bookid=14705','loginfo14705','2');">
+                 </td>
+		<td>
+                    
+                        <input type="button" class="inputStyle" onMouseOver="this.className='inputStyleO';" onMouseOut="this.className='inputStyle';"value="标价并投标" onClick="ondo('14705');">
+                        
+                    
+                 </td>
+	</tr>
+	</tbody>
+</table>
+</div>
+</form>
+
+    </div>
+</div>
+</body>
+</html>
